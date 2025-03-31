@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recipe List</title>
+</head>
+<body>
+    <h1>All Recipes</h1>
+
+    {% if current_user.is_authenticated %}
+        <p>Welcome, {{ current_user.username }}!</p>
+        <p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+        <p><a href="{{ url_for('main.new_recipe') }}">Add New Recipe</a></p>
+    {% else %}
+        <p><a href="{{ url_for('main.login') }}">Login</a></p>
+    {% endif %}
+
+    <ul>
+        {% for recipe in recipes %}
+            <li>
+                <a href="{{ url_for('main.view_recipe', recipe_id=recipe.id) }}">
+                    {{ recipe.title }}
+                </a>
+                {% if recipe.author %}
+                    — by {{ recipe.author.username }}
+                {% endif %}
+            </li>
+        {% else %}
+            <li>No recipes found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
