@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import RecipeForm, LoginForm, DeleteForm
+from app.forms import RecipeForm, LoginForm, DeleteForm, RegisterForm
 from app.models import Recipe, User
 from app import db
 
@@ -64,3 +64,21 @@ def logout():
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.list_recipes'))
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Username already taken.')
+            return redirect(url_for('main.register'))
+
+        user = User(username=form.username.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Registered successfully. Please log in.')
+        return redirect(url_for('main.login'))
+
+    return render_template('register.html', form=form)
+

@@ -1,32 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Recipe List</title>
-</head>
+<head><title>All Recipes</title></head>
 <body>
-    <h1>All Recipes</h1>
+  <h1>All Recipes</h1>
+  <p><a href="{{ url_for('main.login') }}">Login</a> |
+     <a href="{{ url_for('main.register') }}">Register</a> |
+     <a href="{{ url_for('main.new_recipe') }}">New Recipe</a></p>
 
-    {% if current_user.is_authenticated %}
-        <p>Welcome, {{ current_user.username }}!</p>
-        <p><a href="{{ url_for('main.logout') }}">Logout</a></p>
-        <p><a href="{{ url_for('main.new_recipe') }}">Add New Recipe</a></p>
-    {% else %}
-        <p><a href="{{ url_for('main.login') }}">Login</a></p>
-    {% endif %}
-
+  {% if recipes %}
     <ul>
-        {% for recipe in recipes %}
-            <li>
-                <a href="{{ url_for('main.view_recipe', recipe_id=recipe.id) }}">
-                    {{ recipe.title }}
-                </a>
-                {% if recipe.author %}
-                    — by {{ recipe.author.username }}
-                {% endif %}
-            </li>
-        {% else %}
-            <li>No recipes found.</li>
-        {% endfor %}
+      {% for recipe in recipes %}
+        <li><a href="{{ url_for('main.view_recipe', recipe_id=recipe.id) }}">{{ recipe.title }}</a></li>
+      {% endfor %}
     </ul>
+  {% else %}
+    <p>No recipes found.</p>
+  {% endif %}
 </body>
 </html>
